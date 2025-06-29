@@ -10,6 +10,7 @@ import { NgModel } from '@angular/forms';
   templateUrl: './tasks-add.component.html',
   styleUrl: './tasks-add.component.css'
 })
+
 export class TasksAddComponent {
 
   AddTaskValue: string = '';
@@ -22,7 +23,7 @@ export class TasksAddComponent {
 
   onTaskAdd(event: any) { 
     let task: Task = new Task(event.target.value, false, this.getTodayasString());
-    this.taskService.addTask(task).suscribe(
+    this.taskService.addTask(task).subscribe(
       (newTask: Task) => {
         this.AddTaskValue = ' '; // Clear the input field after adding the task
         this.taskService.onTaskAdded.emit(newTask); // Emit the new task
