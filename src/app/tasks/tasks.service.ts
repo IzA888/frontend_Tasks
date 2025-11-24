@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Task } from './tasks.model';
+import { Observable } from 'rxjs/internal/Observable';
 
 
 @Injectable()
@@ -14,21 +15,27 @@ export class TaskService {
     }
 
     getTasks() {
-        return this.http.get("/api/tasks").pipe(
+        return this.http.get("/tasks").pipe(
             map(response => response)
         );
     }
 
-    saveTask(task: Task, checked: boolean) { 
+    updateTask(task: Omit<Task, "id">, checked: boolean) { 
         task.completed = checked;
-        return this.http.post("/api/tasks/save", task).pipe(
+        return this.http.post("/tasks/save", task).pipe(
             map(response => response)
-    )
+        )
     }
 
-    addTask(task: Task) { 
-        return this.http.post("/api/tasks/save", task).pipe(
+    saveTask(task: Omit<Task, "id">): Observable<Task>{ 
+        return this.http.post<Task>("/tasks/save", task).pipe(
             map(response => response)
-    )
+        )
+    }
+
+    delete(id: number): Observable<void> {
+        return this.http.delete<void>('/tasks/' + id).pipe(
+            map(response => response)
+        )
     }
 }

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Task } from '../tasks.model';
 import { TaskService } from '../tasks.service';
-import { NgModel } from '@angular/forms';
+import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-tasks-add',
   standalone: true,
-  imports: [NgModel],
+  imports: [FormsModule],
   templateUrl: './tasks-add.component.html',
   styleUrl: './tasks-add.component.css'
 })
@@ -22,11 +22,11 @@ export class TasksAddComponent {
   }
 
   onTaskAdd(event: any) { 
-    let task: Task = new Task(event.target.value, false, this.getTodayasString());
-    this.taskService.addTask(task).subscribe(
-      (newTask: Task) => {
+    let task: Omit<Task, "id"> = new Task(event.target.value, false, this.getTodayasString());
+    this.taskService.saveTask(task).subscribe(
+      (newtask: Task) => {
         this.AddTaskValue = ' '; // Clear the input field after adding the task
-        this.taskService.onTaskAdded.emit(newTask); // Emit the new task
+        this.taskService.onTaskAdded.emit(newtask); // Emit the new task
       }
     )
   }
