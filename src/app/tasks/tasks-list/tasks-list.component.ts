@@ -37,6 +37,10 @@ export class TasksListComponent {
   }
 
   onTasksChange(event: any, task: Task) {
-    this.taskService.saveTask(task, event.target.checked).subscribe();
+    this.taskService.updateTask(task, event.target.checked).subscribe();
+  }
+
+  deleteTask(task: Task) {
+    this.taskService.delete(task.id).subscribe();
   }
 }
