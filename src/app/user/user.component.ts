@@ -23,11 +23,38 @@ export class UserComponent implements OnInit {
   constructor(private userService: UserService, private dialog: MatDialog){}
 
   ngOnInit(): void {
-    this.dialog.open(UserAuthDialogComponent, {
-      width: '450px',
-      disableClose:true
-    })
-    this.getUsuarioLogado();
+    if(!this.user){
+      const ref = this.dialog.open(UserAuthDialogComponent, {
+          width: '450px',
+          disableClose:true,
+        });
+        ref.afterClosed().subscribe(result => {
+          console.log(result);
+          if( result.action === "Login"){
+            this.userService.loginUser(result.user).subscribe({
+              next: (resp) => {
+                const token = resp.headers.get('Authorization');
+                if(token){
+                  localStorage.setItem("token", token)
+                  alert("Usuário logado com sucesso");
+                  this.getUsuarioLogado();
+                } else {
+                  this.error = "Token não encontrado"
+                }
+              },
+            });
+          }
+          if( result.action === "Cadastro"){
+            this.userService.createUser(result.user).subscribe({
+               next: () => {
+                alert("Usuário cadastrado com sucesso");
+                this.getUsuarioLogado();
+              },
+            });
+          }
+        })
+      }
+
   }
 
   getUsuarioLogado(): void {
@@ -44,7 +71,10 @@ export class UserComponent implements OnInit {
   }
 
   onEdit() {
-    this.userService.editUser(this.user.id, this.user).subscribe();
+    this.userService.editUser(this.user.id, this.user).subscribe({
+      next: () => alert("Usuário atualizado com sucesso"),
+      error: () => alert("Erro ao atualizar usuário")
+    });
   }
 
   onDelete() {

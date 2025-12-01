@@ -4,6 +4,7 @@ import { UserLoginComponent } from "../user-login/user-login.component";
 import { UserAddComponent } from "../user-add/user-add.component";
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
+import { User } from '../user.model';
 
 @Component({
   selector: 'app-user-auth-dialog',
@@ -14,11 +15,25 @@ import { MatTabsModule } from '@angular/material/tabs';
 })
 export class UserAuthDialogComponent {
 
-  selectTab =0;
+  selectTab = 1;
 
   constructor(private dialogRef: MatDialogRef<UserAuthDialogComponent>){}
   
-  close(result: string) {
-    this.dialogRef.close(result);
+  change(index: number){
+    this.selectTab = index;
+  }
+
+  Login(user: User){
+    this.dialogRef.close({
+      action: "login",
+      user: user
+    });
+  }
+
+  Cadastro(user: User){
+    this.dialogRef.close({
+      action: "cadastro",
+      user: user  
+    })
   }
 }

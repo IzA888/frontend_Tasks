@@ -1,27 +1,15 @@
 <h2 mat-dialog-title> Autenticação</h2>
 
 <mat-tab-group [(selectedIndex)]="selectTab">
-    <mat-tab label="Login">
+    <mat-tab label="Login" (click)="change(0)">
         <div style="padding: 10px;">
-            <app-user-login></app-user-login>
-        </div>
-
-        <div mat-dialog-actions align="end">
-            <button mat-raised-button color="primary" (click)="close('login')">
-                Entrar
-            </button>
+            <app-user-login (loginSubmit)="Login($event)"></app-user-login>
         </div>
     </mat-tab>
 
-    <mat-tab label="Cadastro">
+    <mat-tab label="Cadastro" (click)="change(1)">
         <div style="padding: 10px;">
-            <app-user-add></app-user-add>
-        </div>
-
-        <div mat-dialog-actions align="end">
-            <button mat-raised-button color="primary" (click)="close('Cadatro')">
-                Salvar
-            </button>
+            <app-user-add (cadastroSubmit)="Cadastro($event)"></app-user-add>
         </div>
     </mat-tab>
 </mat-tab-group>

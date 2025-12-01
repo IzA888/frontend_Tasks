@@ -1,5 +1,5 @@
 <div class="user-perfil" *ngIf="user">
-    <mat-icon fontIcon="perfil"></mat-icon>
+    <mat-icon>person</mat-icon>
     <p>{{user.username}}</p>
 
     <button (click)="onEdit()" class="btn btn-primary">
@@ -10,7 +10,7 @@
         Apagar perfil
     </button>
 
-    <div *ngIf="loading"> Carregando...</div>
+    <div *ngIf="!user"> Carregando...</div>
 
     <div *ngIf="error" class="error">
         {{ error }}
