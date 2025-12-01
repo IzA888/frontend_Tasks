@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon"
-import { NgIf } from "../../../node_modules/@angular/common/index";
+import { NgIf } from "@angular/common";
 import { UserService } from './user.service';
 import { User } from './user.model';
-import { UserAddComponent } from './user-add/user-add.component';
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { UserAuthDialogComponent } from './user-auth-dialog/user-auth-dialog.component';
 
 @Component({

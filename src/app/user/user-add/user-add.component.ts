@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MatDialogTitle, MatDialogContent } from "../../../../node_modules/@angular/material/dialog/index";
+import { MatDialogTitle, MatDialogContent } from "@angular/material/dialog/index";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from '@angular/material/input';
 import { User } from '../user.model';
