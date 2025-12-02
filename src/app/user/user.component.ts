@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon"
 import { NgIf } from "@angular/common";
 import { UserService } from './user.service';
 import { User } from './user.model';
 import { MatDialog } from "@angular/material/dialog";
 import { UserAuthDialogComponent } from './user-auth-dialog/user-auth-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -19,6 +20,8 @@ export class UserComponent implements OnInit {
   user!: User;
   loading = true;
   error = '';
+
+  private router = inject(Router);
 
   constructor(private userService: UserService, private dialog: MatDialog){}
 
@@ -35,20 +38,29 @@ export class UserComponent implements OnInit {
               next: (resp) => {
                 const token = resp.headers.get('Authorization');
                 if(token){
-                  localStorage.setItem("token", token)
+                  this.userService.saveToken(token);
                   alert("Usuário logado com sucesso");
                   this.getUsuarioLogado();
+                  this.router.navigate(["/"])
                 } else {
-                  this.error = "Token não encontrado"
+                  this.error = "Token não encontrado";
                 }
               },
             });
           }
           if( result.action === "Cadastro"){
             this.userService.createUser(result.user).subscribe({
-               next: () => {
+               next: (resp) => {
                 alert("Usuário cadastrado com sucesso");
-                this.getUsuarioLogado();
+                const token = resp.headers.get('Authorization');
+                if(token){
+                  this.userService.saveToken(token);
+                  alert("Usuário logado com sucesso");
+                  this.getUsuarioLogado();
+                  this.router.navigate(["/"])
+                } else {
+                  this.error = "Token não encontrado";
+                }
               },
             });
           }

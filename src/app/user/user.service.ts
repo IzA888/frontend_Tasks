@@ -12,8 +12,10 @@ export class UserService {
 
     constructor(private http: HttpClient) {}
 
-    createUser(user: User): Observable<User> {
-        return this.http.post<User>(`${this.url}/user/save`, user)
+    createUser(user: User): Observable<HttpResponse<User>> {
+        return this.http.post<User>(`${this.url}/user/save`, user, {
+            observe: 'response'
+        })
     }
 
     getUser(id: number): Observable<User>{
@@ -33,4 +35,17 @@ export class UserService {
             observe: 'response'
         });
     }
+
+    saveToken(token: string){
+        localStorage.setItem('token', token);
+    }
+
+    getToken(): string | null {
+        return localStorage.getItem('token');
+    }
+
+    isAuthenticated(): boolean {
+        return !!this.getToken();
+    }
+
 }
