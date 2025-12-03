@@ -1,10 +1,9 @@
-<div *ngIf="!user"> Carregando...</div>
 
 <div *ngIf="error" class="error">
     {{ error }}
 </div>
 
-<div class="user-perfil" *ngIf="!loading && user">
+<div class="user-perfil" *ngIf="user">
     <mat-icon>person</mat-icon>
     <p>{{user.username}}</p>
 
@@ -17,3 +16,5 @@
     </button>
 
 </div>
+
+<div *ngIf="!user" class="carregando"> Carregando...</div>

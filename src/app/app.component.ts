@@ -7,6 +7,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { UserService } from './user/user.service';
 
 
 @Component({

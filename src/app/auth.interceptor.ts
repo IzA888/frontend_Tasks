@@ -1,12 +1,10 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { UserService } from './user/user.service';
-import { CsrfService } from './user/csrf.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const userService = inject(UserService);
-  const csrf = inject(CsrfService);
 
   const token = userService.getToken();
 
@@ -26,7 +24,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   (newReq.method !== 'OPTIONS');
 
   if(mutates) {
-    const csrfToken = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/)?.[1] ?? null;
+    const csrfToken = document.cookie
+                              .split('; ')
+                              .find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? null;
     if(csrfToken){
       newReq = newReq.clone({
         withCredentials: true,

@@ -1,3 +1,12 @@
 :host {
   display: block;
 }
+
+.carregando {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 200px;
+  font-size: 18px;
+}

@@ -1,6 +1,6 @@
 import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subscribable } from "rxjs";
 import { User } from "./user.model";
 
 @Injectable({
@@ -12,14 +12,25 @@ export class UserService {
 
     constructor(private http: HttpClient) {}
 
+    private userSubject = new BehaviorSubject<User | null>(null);
+
+    setUser(user: User){
+        this.userSubject.next(user);
+    }
+
+    getUser$(): Observable<User | null> {
+        return this.userSubject.asObservable();
+    }
+
     createUser(user: User): Observable<HttpResponse<User>> {
         return this.http.post<User>(`${this.url}/user/save`, user, {
-            observe: 'response'
+            observe: 'response',
+            withCredentials: true
         })
     }
 
     getUser(id: number): Observable<User>{
-        return this.http.get<User>(`${this.url}/user/${id}`);
+        return this.http.get<User>(`${this.url}/user/${id}`, { withCredentials: true });
     }
 
     editUser(id: number, user: User): Observable<User>{
@@ -32,12 +43,13 @@ export class UserService {
 
     loginUser(user: User): Observable<HttpResponse<User>>{
         return this.http.post<User>(`${this.url}/user/login`, user, {
-            observe: 'response'
+            observe: 'response',
+            withCredentials: true
         });
     }
 
     saveToken(token: string){
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', token.replace("Bearer ", ""));
     }
 
     getToken(): string | null {

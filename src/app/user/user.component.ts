@@ -20,13 +20,13 @@ export class UserComponent implements OnInit {
   user!: User;
   loading = true;
   error = '';
-
-  private router = inject(Router);
-
+  
   constructor(private userService: UserService, private dialog: MatDialog){}
+  
+  private token = this.userService.getToken();
 
   ngOnInit(): void {
-    if(!this.user){
+    if(!this.token){
       const ref = this.dialog.open(UserAuthDialogComponent, {
           width: '450px',
           disableClose:true,
@@ -34,39 +34,53 @@ export class UserComponent implements OnInit {
         ref.afterClosed().subscribe(result => {
           console.log(result);
           if( result.action === "Login"){
-            this.userService.loginUser(result.user).subscribe({
-              next: (resp) => {
-                const token = resp.headers.get('Authorization');
-                if(token){
-                  this.userService.saveToken(token);
-                  alert("Usuário logado com sucesso");
-                  this.getUsuarioLogado();
-                  this.router.navigate(["/"])
-                } else {
-                  this.error = "Token não encontrado";
-                }
-              },
-            });
+            this.doLogin(result.user);
           }
           if( result.action === "Cadastro"){
-            this.userService.createUser(result.user).subscribe({
-               next: (resp) => {
-                alert("Usuário cadastrado com sucesso");
-                const token = resp.headers.get('Authorization');
-                if(token){
-                  this.userService.saveToken(token);
-                  alert("Usuário logado com sucesso");
-                  this.getUsuarioLogado();
-                  this.router.navigate(["/"])
-                } else {
-                  this.error = "Token não encontrado";
-                }
-              },
-            });
+            this.doCadastro(result.user);
           }
         })
       }
+    this.userService.getUser$().subscribe(u => {
+        this.user = u!;
+    });
+  }
 
+  doLogin(user: any){
+    this.userService.loginUser(user).subscribe({
+      next: (resp) => {
+        const token = resp.headers.get('Authorization');
+        if(token){
+          this.userService.saveToken(token);
+          alert("Usuário logado com sucesso");
+          this.userService.setUser(user);
+
+          setTimeout(() => {
+            this.getUsuarioLogado();
+          }, 50);
+        } else {
+          this.error = "Token não encontrado";
+        }
+      },
+    });
+  }
+
+  doCadastro(user: any){
+    this.userService.createUser(user).subscribe({
+        next: (resp) => {
+        alert("Usuário cadastrado com sucesso");
+        const token = resp.headers.get('Authorization');
+        if(token){
+          this.userService.saveToken(token);
+          alert("Usuário logado com sucesso");
+          setTimeout(() => {
+            this.getUsuarioLogado();
+          }, 50);
+        } else {
+          this.error = "Token não encontrado";
+        }
+      },
+    });
   }
 
   getUsuarioLogado(): void {
