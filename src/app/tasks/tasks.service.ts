@@ -24,14 +24,14 @@ export class TaskService {
 
     updateTask(task: Task, checked: boolean) { 
         task.completed = checked;
-        return this.http.post(`${this.url}/tasks/${task.id}`, task)
+        return this.http.post(`${this.url}/tasks/${task.id}`, task,  { withCredentials: true })
     }
 
     saveTask(task: Omit<Task, `id`>): Observable<Task>{ 
-        return this.http.post<Task>(`${this.url}/tasks/save`, task)
+        return this.http.post<Task>(`${this.url}/tasks/save`, task, { withCredentials: true })
     }
 
     delete(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.url}/tasks/${id}`)
+        return this.http.delete<void>(`${this.url}/tasks/${id}`,  { withCredentials: true })
     }
 }
