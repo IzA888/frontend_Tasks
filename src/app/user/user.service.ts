@@ -22,6 +22,10 @@ export class UserService {
         return this.userSubject.asObservable();
     }
 
+    getLoggedUser(): Observable<User> {
+        return this.http.get<User>(`${this.url}/user/me`, { withCredentials: true })
+    }
+
     createUser(user: User): Observable<HttpResponse<User>> {
         return this.http.post<User>(`${this.url}/user/save`, user, {
             observe: 'response',
@@ -60,4 +64,8 @@ export class UserService {
         return !!this.getToken();
     }
 
+    clearToken() {
+        localStorage.removeItem("token");
+        this.userSubject.next(null);
+    }
 }

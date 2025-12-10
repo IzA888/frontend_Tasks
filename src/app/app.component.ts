@@ -11,7 +11,6 @@ import { UserService } from './user/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { UserAuthDialogComponent } from './user/user-auth-dialog/user-auth-dialog.component';
 import { User } from './user/user.model';
-import { DialogRef } from '@angular/cdk/dialog';
 
 
 
@@ -26,7 +25,7 @@ import { DialogRef } from '@angular/cdk/dialog';
 export class AppComponent implements OnInit {
 
   opened = true;
-  user!: User;
+  user: User | null = null;
   error = '';
   loading = true;
 
@@ -36,29 +35,29 @@ export class AppComponent implements OnInit {
 
   constructor(private userService: UserService, private dialog: MatDialog) {}
   
-  private token = this.userService.getToken();
-
+  
   ngOnInit(): void {
-    if(!this.token){
-      const ref = this.dialog.open(UserAuthDialogComponent, {
+    const token = this.userService.getToken();
+    if(!token){
+      this.openAuthDialog();
+    }
+  }
+
+  openAuthDialog(){
+    const ref = this.dialog.open(UserAuthDialogComponent, {
           width: '450px',
           disableClose:true,
         });
         ref.afterClosed().subscribe(result => {
-          console.log(result);
+          if(!result) return;
           if( result.action === "Login"){
             this.doLogin(result.user, ref);
           }
           if( result.action === "Cadastro"){
             this.doCadastro(result.user, ref);
           }
-        })
-      }
-    this.userService.getUser$().subscribe(u => {
-        this.user = u!;
-    });
+      })
   }
-
 
   doLogin(user: any, dialogRef: any){
     this.userService.loginUser(user).subscribe({
@@ -67,12 +66,9 @@ export class AppComponent implements OnInit {
         if(token){
           this.userService.saveToken(token);
           alert("Usuário logado com sucesso");
-          this.userService.setUser(user);
-          dialogRef.close();
+          this.userService.setUser(user);          
+          this.getUsuarioLogado(() => dialogRef.close());
 
-          setTimeout(() => {
-            this.getUsuarioLogado();
-          }, 50);
         } else {
           this.error = "Token não encontrado";
         }
@@ -87,11 +83,8 @@ export class AppComponent implements OnInit {
         const token = resp.headers.get('Authorization');
         if(token){
           this.userService.saveToken(token);
-          alert("Usuário logado com sucesso");
-          dialogRef.close();
-          setTimeout(() => {
-            this.getUsuarioLogado();
-          }, 50);
+          this.getUsuarioLogado(() => dialogRef.close());
+
         } else {
           this.error = "Token não encontrado";
         }
@@ -99,15 +92,17 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getUsuarioLogado(): void {
-    this.userService.getUser(this.user.id).subscribe({
+  getUsuarioLogado(afterLoad?: () => void): void {
+    this.userService.getLoggedUser().subscribe({
       next: (res: User) => {
+        this.userService.setUser(res);
         this.user = res;
         this.loading = false;
       },
       error: () => {
         this.error = "Erro ao carregar usuário";
         this.loading = false;
+        this.user = null;
       }
     });
   }
