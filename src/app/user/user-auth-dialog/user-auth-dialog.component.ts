@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MatDialogRef, MatDialogTitle, MatDialogActions } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogTitle, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { UserLoginComponent } from "../user-login/user-login.component";
 import { UserAddComponent } from "../user-add/user-add.component";
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +9,7 @@ import { User } from '../user.model';
 @Component({
   selector: 'app-user-auth-dialog',
   standalone: true,
-  imports: [MatDialogTitle, UserLoginComponent, MatDialogActions, MatButtonModule, MatTabsModule, UserAddComponent],
+  imports: [MatDialogTitle, UserLoginComponent, MatDialogActions, MatDialogModule, MatButtonModule, MatTabsModule, UserAddComponent],
   templateUrl: './user-auth-dialog.component.html',
   styleUrl: './user-auth-dialog.component.css'
 })
@@ -25,14 +25,15 @@ export class UserAuthDialogComponent {
 
   Login(user: User){
     this.dialogRef.close({
-      action: "login",
+      action: "Login",
       user: user
     });
+    console.log(user);
   }
 
   Cadastro(user: User){
     this.dialogRef.close({
-      action: "cadastro",
+      action: "Cadastro",
       user: user  
     })
   }

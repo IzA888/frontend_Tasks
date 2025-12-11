@@ -40,50 +40,53 @@ export class AppComponent implements OnInit {
     const token = this.userService.getToken();
     if(!token){
       this.openAuthDialog();
+    } else {
     }
   }
-
+  
   openAuthDialog(){
     const ref = this.dialog.open(UserAuthDialogComponent, {
-          width: '450px',
-          disableClose:true,
-        });
-        ref.afterClosed().subscribe(result => {
-          if(!result) return;
-          if( result.action === "Login"){
-            this.doLogin(result.user, ref);
-          }
-          if( result.action === "Cadastro"){
-            this.doCadastro(result.user, ref);
-          }
-      })
+      width: '450px',
+      disableClose:true,
+    });
+    ref.afterClosed().subscribe(result => {
+      console.log("FECHOU ", result);
+      if(!result) return;
+      if( result.action === "Login"){
+        this.doLogin(result.user);
+        alert("Usuário logado com sucesso");
+      }
+      if( result.action === "Cadastro"){
+        this.doCadastro(result.user);
+        alert("Usuário cadastrado com sucesso");
+      }
+    })
   }
 
-  doLogin(user: any, dialogRef: any){
+  doLogin(user: any){
     this.userService.loginUser(user).subscribe({
       next: (resp) => {
         const token = resp.headers.get('Authorization');
         if(token){
           this.userService.saveToken(token);
-          alert("Usuário logado com sucesso");
           this.userService.setUser(user);          
-          this.getUsuarioLogado(() => dialogRef.close());
+          this.getUsuarioLogado();
+          console.log("logado");
 
         } else {
-          this.error = "Token não encontrado";
+          console.error("Token não encontrado");
         }
       },
     });
   }
 
-  doCadastro(user: any, dialogRef: any){
+  doCadastro(user: any){
     this.userService.createUser(user).subscribe({
         next: (resp) => {
-        alert("Usuário cadastrado com sucesso");
         const token = resp.headers.get('Authorization');
         if(token){
           this.userService.saveToken(token);
-          this.getUsuarioLogado(() => dialogRef.close());
+          this.getUsuarioLogado();
 
         } else {
           this.error = "Token não encontrado";
@@ -92,17 +95,17 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getUsuarioLogado(afterLoad?: () => void): void {
+  getUsuarioLogado(): void {
     this.userService.getLoggedUser().subscribe({
       next: (res: User) => {
         this.userService.setUser(res);
-        this.user = res;
         this.loading = false;
       },
       error: () => {
         this.error = "Erro ao carregar usuário";
         this.loading = false;
-        this.user = null;
+        this.userService.clearToken();
+        this.openAuthDialog();
       }
     });
   }

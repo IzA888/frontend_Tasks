@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { AfterContentInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon"
 import { NgIf } from "@angular/common";
 import { UserService } from './user.service';
 import { User } from './user.model';
+import { filter } from 'rxjs';
 
 
 @Component({
@@ -14,16 +15,25 @@ import { User } from './user.model';
 })
 export class UserComponent {
 
-  @Input() user!: User | null;
-  @Input() loading = true;
-  @Input() error = '';
-  
+  user!: User | null;
+  loading = true;
+  error = '';
+    
   constructor(private userService: UserService){}
 
-  ngAfterInit(){
-     this.userService.getUser$().subscribe(u => {
+  ngOnInit(){
+     this.userService.getUser$()
+     .pipe( filter(u => u !== null))
+     .subscribe({
+      next: (u) => {
+        //window.location.reload();
+        console.log("getUser$ ", u)
         this.user = u;
         this.loading = false;
+      },
+      error: () => {
+        console.log(this.error);
+      }
     });
   }
 
@@ -39,7 +49,10 @@ export class UserComponent {
   onDelete() {
     if(confirm("Tem certeza que deseja excluir a conta?") && this.user){
       this.userService.deleteUser(this.user.id).subscribe({
-        next: () => alert("Usuário excluído com sucesso"),
+        next: () => {
+          alert("Usuário excluído com sucesso"),
+          window.location.reload();
+        },
         error: () => alert("Erro ao excluir usuário")
       });
     }

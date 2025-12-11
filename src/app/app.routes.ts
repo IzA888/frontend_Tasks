@@ -8,7 +8,6 @@ export const routes: Routes = [
     {
         path: '',
         component: AppComponent,
-        canActivate:[authGuard],
         children: [
             {
                 path: 'tasks',

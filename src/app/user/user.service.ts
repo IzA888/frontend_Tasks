@@ -8,7 +8,7 @@ import { User } from "./user.model";
 })
 export class UserService {
 
-    private url ="http://127.0.0.1:8080";
+    private url ="http://localhost:8080";
 
     constructor(private http: HttpClient) {}
 
@@ -16,6 +16,7 @@ export class UserService {
 
     setUser(user: User){
         this.userSubject.next(user);
+        console.log("setUset disparou", user);
     }
 
     getUser$(): Observable<User | null> {
@@ -38,11 +39,11 @@ export class UserService {
     }
 
     editUser(id: number, user: User): Observable<User>{
-        return this.http.put<User>(`${this.url}/user/${id}`, user)
+        return this.http.put<User>(`${this.url}/user/${id}`, user, { withCredentials: true })
     }
     
     deleteUser(id: number): Observable<User>{
-        return this.http.delete<User>(`${this.url}/user/${id}`);
+        return this.http.delete<User>(`${this.url}/user/${id}`, { withCredentials: true });
     }
 
     loginUser(user: User): Observable<HttpResponse<User>>{
@@ -54,6 +55,7 @@ export class UserService {
 
     saveToken(token: string){
         localStorage.setItem('token', token.replace("Bearer ", ""));
+        console.log(localStorage.getItem("token"));
     }
 
     getToken(): string | null {

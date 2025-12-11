@@ -27,5 +27,6 @@ export class UserLoginComponent {
 
   login(){
     this.loginSubmit.emit(this.loginForm.value);
+    console.log(this.loginForm.value);
   }
 }

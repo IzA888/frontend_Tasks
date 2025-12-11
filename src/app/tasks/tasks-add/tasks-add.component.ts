@@ -17,10 +17,6 @@ export class TasksAddComponent {
 
   constructor(private taskService: TaskService) { }
 
-  ngOnInit() { 
-
-  }
-
   onTaskAdd(event: any) { 
     let task: Omit<Task, "id"> = new Task(event.target.value, false, this.getTodayasString());
     this.taskService.saveTask(task).subscribe(
