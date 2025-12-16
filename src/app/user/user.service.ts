@@ -54,12 +54,12 @@ export class UserService {
     }
 
     saveToken(token: string){
-        localStorage.setItem('token', token.replace("Bearer ", ""));
+        sessionStorage.setItem('token', token.replace("Bearer ", ""));
         console.log(localStorage.getItem("token"));
     }
 
     getToken(): string | null {
-        return localStorage.getItem('token');
+        return sessionStorage.getItem('token');
     }
 
     isAuthenticated(): boolean {
@@ -67,7 +67,7 @@ export class UserService {
     }
 
     clearToken() {
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         this.userSubject.next(null);
     }
 }

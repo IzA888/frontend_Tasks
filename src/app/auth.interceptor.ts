@@ -20,25 +20,25 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
-  // const mutates = 
-  // (newReq.method !== 'GET') &&
-  // (newReq.method !== 'HEAD') && 
-  // (newReq.method !== 'OPTIONS');
+  const mutates = 
+  (newReq.method !== 'GET') &&
+  (newReq.method !== 'HEAD') && 
+  (newReq.method !== 'OPTIONS');
 
-  //if(mutates) {
-  const csrfToken = document.cookie
-                            .split('; ')
-                            .find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? null;
-  if(csrfToken){
-    newReq = newReq.clone({
-      setHeaders: {
-        'X-XSRF-TOKEN': csrfToken
-      }
-    });
-    //}
+  if(mutates) {
+    const csrfToken = document.cookie
+                              .split('; ')
+                              .find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? null;
+    if(csrfToken){
+      newReq = newReq.clone({
+        setHeaders: {
+          'X-XSRF-TOKEN': csrfToken
+        }
+      });
+    }
+    console.log("XSRF:", csrfToken);
   }
   
-  console.log("XSRF:", csrfToken);
   console.log("Authorization:", token);
   return next(newReq);
 

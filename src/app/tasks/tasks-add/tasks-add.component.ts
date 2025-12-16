@@ -18,7 +18,7 @@ export class TasksAddComponent {
   constructor(private taskService: TaskService) { }
 
   onTaskAdd(event: any) { 
-    let task: Omit<Task, "id"> = new Task(event.target.value, false, this.getTodayasString());
+    let task: Omit<Task, "id"> = new Task(event.target.value, this.getTodayasString(), false);
     this.taskService.saveTask(task).subscribe(
       (newtask: Task) => {
         this.AddTaskValue = ' '; // Clear the input field after adding the task

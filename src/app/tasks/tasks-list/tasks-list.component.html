@@ -7,7 +7,7 @@
                     (change)="onTasksChange($event, task)"
                     [checked]="task.completed">
                 <span ngClass="task.completed ? 'name completed'  : 'name'">{{task.name}}</span>
-                <span class="label {{ getDueDateLabel(task) }} pull=right"> {{task.dueDate}}</span> 
+                <span class="label {{ getDueDateLabel(task) }} pull=right"> {{task.date}}</span> 
             </div>
 
             <button class="btn btn-danger btn-sm" (click)="deleteTask(task)"> Delete</button>
