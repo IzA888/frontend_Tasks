@@ -1,6 +1,6 @@
 import { AfterContentInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon"
-import { NgIf } from "@angular/common";
+import { AsyncPipe, NgIf } from "@angular/common";
 import { UserService } from './user.service';
 import { User } from './user.model';
 import { filter } from 'rxjs';
@@ -9,7 +9,7 @@ import { filter } from 'rxjs';
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [MatIconModule, NgIf],
+  imports: [MatIconModule, NgIf, AsyncPipe],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
 })
@@ -18,15 +18,16 @@ export class UserComponent {
   user!: User | null;
   loading = true;
   error = '';
+  user$ = this.userService.user$;
+
     
   constructor(private userService: UserService){}
 
   ngOnInit(){
-     this.userService.getUser$()
+    this.userService.getUser$()
      .pipe( filter(u => u !== null))
      .subscribe({
       next: (u) => {
-        //window.location.reload();
         console.log("getUser$ ", u)
         this.user = u;
         this.loading = false;

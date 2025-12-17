@@ -4,9 +4,9 @@
     {{ error }}
 </div>
 
-<div class="user-perfil" *ngIf="!loading && user as u">
+<div class="user-perfil" *ngIf="user$ |async as user">
     <mat-icon>person</mat-icon>
-    <p>{{u.username}}</p>
+    <p>{{user.username}}</p>
 
     <button (click)="onEdit()" class="btn btn-primary">
         Editar perfil

@@ -13,6 +13,7 @@ export class UserService {
     constructor(private http: HttpClient) {}
 
     private userSubject = new BehaviorSubject<User | null>(null);
+    user$ = this.userSubject.asObservable();
 
     setUser(user: User){
         this.userSubject.next(user);

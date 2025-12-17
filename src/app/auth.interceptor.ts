@@ -40,6 +40,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
   
   console.log("Authorization:", token);
+  console.log('REQ >>>', newReq.method, newReq.url);
   return next(newReq);
 
 };
