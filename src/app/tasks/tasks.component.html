@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-m-12" *ngIf="user$ | async as user">
+                    <div class="col-m-12" *ngIf="(user$ | async) as user">
                         <app-tasks-list></app-tasks-list>
                     </div>
                 </div>

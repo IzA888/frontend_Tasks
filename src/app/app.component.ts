@@ -40,7 +40,6 @@ export class AppComponent implements OnInit {
     const token = this.userService.getToken();
     if(!token){
       this.openAuthDialog();
-    } else {
     }
   }
   

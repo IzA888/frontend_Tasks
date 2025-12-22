@@ -17,6 +17,13 @@ export class TaskService {
 
     taskAdded$: Observable<Task> = this.onTaskAdded.asObservable();
 
+    private reload$ = new Subject<void>();
+    reloadTasks$ = this.reload$.asObservable();
+
+    reload(){
+        this.reload$.next();
+    }
+
     constructor(private http: HttpClient) {}
 
     emitTasks(task: Task){
@@ -29,7 +36,7 @@ export class TaskService {
 
     updateTask(task: Task, checked: boolean) { 
         task.completed = checked;
-        return this.http.post<Task>(`${this.url}/tasks/${task.id}`, task,  { withCredentials: true })
+        return this.http.put<Task>(`${this.url}/tasks/${task.id}`, task,  { withCredentials: true })
     }
 
     saveTask(task: Omit<Task, `id`>): Observable<HttpResponse<Task>>{ 

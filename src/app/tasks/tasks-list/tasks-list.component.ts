@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Task } from '../tasks.model';
 import { NgClass, NgFor } from '@angular/common';
 import { TaskService } from '../tasks.service';
@@ -14,14 +14,15 @@ export class TasksListComponent {
 
   tasks: Task[] = [];
 
-  constructor(private taskService: TaskService) { };
+  constructor(private taskService: TaskService) {};
 
   ngOnInit() { 
+    console.log("init component");
     this.taskService.getTasks().subscribe(
       (tasks: any) => {
         this.tasks = tasks
-        },
-        (error: any) => console.log(error)
+      },
+      (error: any) => console.log(error)
     );
 
     this.taskService.onTaskAdded.subscribe(
@@ -37,10 +38,19 @@ export class TasksListComponent {
   }
 
   onTasksChange(event: any, task: Task) {
-    this.taskService.updateTask(task, event.target.checked).subscribe();
+    this.taskService.updateTask(task, event.target.checked).subscribe(
+      (resp) => {
+        const index = this.tasks.findIndex(t => t.id === task.id);
+        if (index > -1) {
+          this.tasks[index] = resp;
+        }
+      }
+    );
   }
 
   deleteTask(task: Task) {
-    this.taskService.delete(task.id).subscribe();
+    this.taskService.delete(task.id).subscribe(() => {
+      this.taskService.reload();
+    });
   }
 }
