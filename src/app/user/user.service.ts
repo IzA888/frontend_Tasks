@@ -47,8 +47,8 @@ export class UserService {
         return this.http.delete<User>(`${this.url}/user/${id}`, { withCredentials: true });
     }
 
-    loginUser(user: Omit<User, 'id'>): Observable<HttpResponse<User>>{
-        return this.http.post<User>(`${this.url}/user/login`, user, {
+    loginUser(user: Omit<User, 'id'>): Observable<HttpResponse<Omit<User, 'id'>>>{
+        return this.http.post<Omit<User, 'id'>>(`${this.url}/user/login`, user, {
             observe: 'response',
             withCredentials: true
         });
