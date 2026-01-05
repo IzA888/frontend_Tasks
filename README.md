@@ -1,25 +1,189 @@
-# Frontend  de Aplicação de Gerenciamento de Tarefas
+Perfeito 🙂
+# 🖥️ Documentação Frontend – Tasks App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.5.
+Este documento descreve a arquitetura, estrutura e fluxo do **frontend da aplicação Tasks**, desenvolvido em **Angular**.
 
-## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🔹 Tecnologias Utilizadas
 
-## Code scaffolding
+* **Angular (standalone components)**
+* **TypeScript**
+* **Angular Material**
+* **RxJS**
+* **HTTP Client**
+* **JWT + XSRF (CSRF Token)**
 
-## Build
 
-Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## 🧠 Tipo de Arquitetura
 
-## Running unit tests
+O frontend segue uma **arquitetura baseada em componentes e serviços**, com **estado centralizado via Services (RxJS)**.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```
+Componentes → Services → Backend (API REST)
+```
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## 📁 Estrutura de Pastas
 
-## Further help
+```
+src/
+ ├── app/
+ │   ├── tasks/
+ │   │   ├── tasks.component.ts
+ │   │   ├── tasks-list.component.ts
+ │   │   ├── task.service.ts
+ │   │
+ │   ├── user/
+ │   │   ├── user.component.ts
+ │   │   ├── user-auth-dialog/
+ │   │   ├── user-login/
+ │   │   ├── user-add/
+ │   │   ├── user.service.ts
+ │   │
+ │   ├── interceptors/
+ │   │   └── auth.interceptor.ts
+ │   │
+ │   ├── models/
+ │   │   ├── user.model.ts
+ │   │   └── task.model.ts
+ │   │
+ │   └── app.component.ts
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## 🧩 Componentes Principais
+
+### AppComponent
+
+* Componente principal da aplicação
+* Controla:
+
+  * Abertura do **pop-up de login/cadastro**
+  * Layout (sidebar, toolbar)
+  * Inicialização da sessão do usuário
+
+---
+
+### UserComponent
+
+* Exibe informações do usuário logado
+* Depende do estado vindo do `UserService`
+* Mostra loading enquanto os dados não carregam
+
+---
+
+### UserAuthDialogComponent
+
+* Modal de autenticação
+* Contém:
+
+  * Login
+  * Cadastro
+* Retorna os dados para o `AppComponent` via `afterClosed()`
+
+---
+
+### TasksComponent
+
+* Componente container das tarefas
+* Responsável por:
+
+  * Criar tarefas
+  * Orquestrar lista de tarefas
+
+---
+
+### TasksListComponent
+
+* Lista as tarefas do usuário
+* Reage a:
+
+  * Criação
+  * Atualização
+  * Exclusão
+
+
+## 🔄 Services
+
+### UserService
+
+Responsável por:
+
+* Login e cadastro
+* Armazenar token JWT
+* Controlar o estado do usuário logado
+
+Utiliza **BehaviorSubject** para compartilhar o usuário entre componentes.
+
+```ts
+private user$ = new BehaviorSubject<User | null>(null);
+```
+
+---
+
+### TaskService
+
+Responsável por:
+
+* Buscar tarefas
+* Criar, editar e excluir tarefas
+* Emitir eventos quando uma tarefa é adicionada
+
+
+## 🔐 Interceptor de Autenticação
+
+### auth.interceptor.ts
+
+Funções:
+
+* Anexa o **JWT** no header `Authorization`
+* Anexa o **XSRF Token** no header `X-XSRF-TOKEN`
+* Usa `withCredentials: true` para permitir cookies
+
+Esse interceptor garante que:
+
+* Requisições autenticadas funcionem corretamente
+* Segurança contra CSRF
+
+
+## 🔄 Fluxo de Login
+
+1. App inicia
+2. Verifica se existe token
+3. Se não existir:
+
+   * Abre o modal de autenticação
+4. Usuário faz login ou cadastro
+5. Token JWT é salvo
+6. Usuário é carregado via API
+7. Componentes reagem automaticamente ao estado do usuário
+
+
+
+## 🔁 Comunicação Entre Componentes
+
+* Não há comunicação direta entre componentes irmãos
+* Tudo passa pelos **Services**
+* O estado é compartilhado usando **Observables (RxJS)**
+
+
+
+## 🧪 Boas Práticas Utilizadas
+
+* Separação de responsabilidades
+* Componentes pequenos e reutilizáveis
+* Services como fonte única de dados
+* Evita `window.location.reload()`
+* Uso correto de Observables e Subscriptions
+
+
+
+## ✅ Benefícios da Arquitetura
+
+* Código organizado
+* Fácil manutenção
+* Fácil entendimento para iniciantes
+* Fluxo previsível de dados
+* Segurança integrada
+
+
